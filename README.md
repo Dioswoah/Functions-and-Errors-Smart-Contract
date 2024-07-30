@@ -68,7 +68,7 @@ contract ValueManager {
         return storedValue;
     }
 }
-
+```
 To compile the contract, click on the "Solidity Compiler" tab in the left-hand sidebar. Ensure the compiler version is set to 0.8.18 or a compatible version, then click the "Compile ValueManager.sol" button.
 
 After compiling the code, navigate to the "Deploy & Run Transactions" tab in the left-hand sidebar. Select the ValueManager contract from the dropdown menu and click the "Deploy" button.
