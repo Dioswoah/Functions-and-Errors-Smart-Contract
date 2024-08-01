@@ -1,84 +1,77 @@
-# Value Manager Smart Contract
+# Custom Guessing Game
 
-This Solidity program demonstrates the use of error handling with `require()`, `assert()`, and `revert()` statements. It provides functionalities to update, increase, decrease, and reset a stored value with appropriate error checking.
+This Solidity program is a simple guessing game that demonstrates the use of `require()`, `assert()`, and `revert()` statements in the Solidity programming language. The purpose of this program is to provide a hands-on example of how to handle errors and manage game logic in a Solidity contract.
 
 ## Description
 
-The contract `ValueManager` includes functions to manage a stored value while ensuring proper execution and state management through error handling. It serves as an example for implementing error checks in Solidity smart contracts.
+This program is a smart contract written in Solidity, a programming language used for developing smart contracts on the Ethereum blockchain. The contract allows a game master to set a secret number and players to guess the number. If a player guesses correctly, the game ends. The contract uses `require()`, `assert()`, and `revert()` statements to ensure proper game flow and error handling.
 
 ## Getting Started
 
 ### Executing Program
 
-To run this program, you can use Remix, an online Solidity IDE. Follow these steps:
+To run this program, you can use Remix, an online Solidity IDE. To get started, go to the Remix website at [https://remix.ethereum.org/](https://remix.ethereum.org/).
 
-1. Visit the Remix website at [Remix](https://remix.ethereum.org/).
-
-2. Create a new file by clicking the "+" icon in the left-hand sidebar. Save the file with a `.sol` extension (e.g., `ValueManager.sol`). Copy and paste the following code into the file:
+Once you are on the Remix website, create a new file by clicking on the "+" icon in the left-hand sidebar. Save the file with a .sol extension (e.g., CustomGuessingGame.sol). Copy and paste the following code into the file:
 
 ```solidity
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.18;
+pragma solidity ^0.8.0;
 
-contract ValueManager {
-    uint256 public storedValue;
-    address public owner;
+contract CustomGuessingGame {
+    uint256 private hiddenNumber;
+    address public gameMaster;
+    bool public isGameActive;
 
-    // Constructor to initialize the stored value and set the owner
-    constructor(uint256 _initialValue) {
-        storedValue = _initialValue;
-        owner = msg.sender;
-    }
+    event GameInitialized(uint256 hiddenNumber);
+    event GameFinished(address winner, uint256 guessedNumber);
+    event GameRestarted();
 
-    modifier onlyOwner() {
-        require(msg.sender == owner, "Only the owner can perform this action");
+    modifier onlyGameMaster() {
+        require(msg.sender == gameMaster, "Only the game master can perform this action");
         _;
     }
 
-    // Function to set a new stored value
-    function updateValue(uint256 _newValue) public onlyOwner {
-        require(_newValue > 0, "New value must be greater than zero");
-        storedValue = _newValue;
+    constructor() {
+        gameMaster = msg.sender;
+        isGameActive = false;
     }
 
-    // Function to increase the stored value and use assert()
-    function increaseValue(uint256 _amount) public onlyOwner {
-        uint256 previousValue = storedValue;
-        storedValue += _amount;
-        assert(storedValue > previousValue);
+    // Function to initialize the game with a hidden number
+    function initializeGame(uint256 _hiddenNumber) public onlyGameMaster {
+        require(!isGameActive, "Game is already active");
+        hiddenNumber = _hiddenNumber;
+        isGameActive = true;
+        emit GameInitialized(hiddenNumber);
     }
 
-    // Function to decrease the stored value and use revert()
-    function decreaseValue(uint256 _amount) public onlyOwner {
-        require(storedValue >= _amount, "Insufficient value to decrease");
-        storedValue -= _amount;
-    }
-
-    // Function to reset the stored value and use revert()
-    function resetStoredValue() public onlyOwner {
-        if (storedValue == 0) {
-            revert("Value is already zero");
+    // Function to guess the number
+    function makeGuess(uint256 _guess) public {
+        require(isGameActive, "Game is not active");
+        if (_guess == hiddenNumber) {
+            isGameActive = false;
+            emit GameFinished(msg.sender, _guess);
+        } else {
+            revert("Incorrect guess, try again");
         }
-        storedValue = 0;
-        revert("The value is reset to zero");
     }
 
-    // Function to check the stored value status
-    function checkStoredValue() public view returns (uint256) {
-        return storedValue;
+    // Function to restart the game
+    function restartGame() public onlyGameMaster {
+        assert(isGameActive == false);
+        emit GameRestarted();
     }
 }
 ```
-To compile the contract, click on the "Solidity Compiler" tab in the left-hand sidebar. Ensure the compiler version is set to 0.8.18 or a compatible version, then click the "Compile ValueManager.sol" button.
 
-After compiling the code, navigate to the "Deploy & Run Transactions" tab in the left-hand sidebar. Select the ValueManager contract from the dropdown menu and click the "Deploy" button.
+To compile the code, click on the "Solidity Compiler" tab in the left-hand sidebar. Make sure the "Compiler" option is set to "0.8.0" (or another compatible version), and then click on the "Compile CustomGuessingGame.sol" button.
 
-The deployed contract will appear in the "Deployed Contracts" section. Here, you can interact with the contract's functions using the provided UI. Test the various functions to observe how the stored value is managed and error handling is executed.
+Once the code is compiled, you can deploy the contract by clicking on the "Deploy & Run Transactions" tab in the left-hand sidebar. Select the "CustomGuessingGame" contract from the dropdown menu, and then click on the "Deploy" button.
 
+Once the contract is deployed, you can interact with it by calling the `initializeGame`, `makeGuess`, and `restartGame` functions. Click on the "CustomGuessingGame" contract in the left-hand sidebar, and then click on the appropriate function. Provide the necessary inputs and click on the "transact" button to execute the function.
 
 ## Authors
-
-Marc Joshua B. Ramos
+Marc Joshua Ramos
 
 ## License
 
