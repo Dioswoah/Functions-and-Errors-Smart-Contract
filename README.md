@@ -1,4 +1,4 @@
-# Custom Guessing Game
+# Simple Guessing Game
 
 This Solidity program is a simple guessing game that demonstrates the use of `require()`, `assert()`, and `revert()` statements in the Solidity programming language. The purpose of this program is to provide a hands-on example of how to handle errors and manage game logic in a Solidity contract.
 
